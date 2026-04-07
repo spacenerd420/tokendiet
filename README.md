@@ -1,73 +1,95 @@
-# tokendiet
+<p align="center">
+  <h1 align="center">tokendiet</h1>
+  <p align="center">
+    <strong>Put your AI tokens on a diet. Save 60-90%.</strong>
+  </p>
+  <p align="center">
+    <a href="https://github.com/spacenerd420/tokendiet"><img src="https://img.shields.io/github/stars/spacenerd420/tokendiet?style=social" alt="Stars"></a>
+    <a href="https://github.com/spacenerd420/tokendiet/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
+    <img src="https://img.shields.io/badge/python-3.7+-blue" alt="Python">
+    <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey" alt="Platform">
+    <a href="https://github.com/spacenerd420/tokendiet/issues"><img src="https://img.shields.io/github/issues/spacenerd420/tokendiet" alt="Issues"></a>
+  </p>
+</p>
 
-Put your AI tokens on a diet. Save 60-90% across Claude Code, Cursor, Codex CLI, and Gemini CLI.
+---
+
+Interactive wizard + copy-paste prompt for reducing token consumption across **Claude Code**, **Cursor**, **Codex CLI**, **Gemini CLI**, and any LLM-powered dev tool.
+
+> **Real-world impact:** 500K tokens/month &rarr; 50-200K/month with these techniques.
+
+---
 
 ## Quick Start
 
+### Option A: Run the wizard
+
 ```bash
+git clone https://github.com/spacenerd420/tokendiet.git
+cd tokendiet
 python3 optimizer.py
 ```
 
-The wizard walks you through 6 phases:
-1. **Ignore files** -- create `.claudeignore` / `.geminiignore` / `.codexignore` (40-70% savings)
-2. **Claude Code settings** -- tune `~/.claude/settings.json` per-setting (60-80% savings)
-3. **Install tools** -- RTK, Repomix, Tokscale, ccusage, files-to-prompt
-4. **CLAUDE.md check** -- flag oversized instruction files
-5. **Best practices** -- quick reference table
-6. **Monitoring** -- commands to track your savings
+The wizard walks you through 6 phases with a clean, step-by-step UI:
 
-Each phase clears the screen and shows a progress log of completed steps.
+| Phase | What | Savings |
+|-------|------|---------|
+| 1. Ignore files | Create `.claudeignore` / `.geminiignore` / `.codexignore` | 40-70% |
+| 2. Settings | Tune `~/.claude/settings.json` per-setting | 60-80% |
+| 3. Tools | Install RTK, Repomix, ccusage, etc. (opt-in each) | 60-90% |
+| 4. CLAUDE.md | Flag oversized instruction files | up to 90% |
+| 5. Best practices | Quick reference cheat sheet | -- |
+| 6. Monitoring | Commands to track savings | -- |
 
-## What It Installs
+### Option B: Just tell your AI
 
-| Tool | What It Does | Savings |
-|------|-------------|---------|
-| [RTK](https://github.com/rtk-ai/rtk) | Compresses CLI output (git, npm, ls...) before AI sees it | 60-90% |
-| [Repomix](https://github.com/yamadashy/repomix) | Packs your codebase into one AI-friendly file | ~70% |
-| [Tokscale](https://www.npmjs.com/package/tokscale) | Tracks token usage across tools | monitor |
-| [ccusage](https://www.npmjs.com/package/ccusage) | Shows Claude Code token usage from logs | monitor |
-| [files-to-prompt](https://github.com/simonw/files-to-prompt) | Cherry-picks files into prompt-friendly format | 50-70% |
-
-All installs are opt-in (y/n for each tool). npm permission issues are handled with sudo fallback.
-
-## Copy-Paste Prompt
-
-Don't want to run the script? Paste this into Claude Code, Cursor, Codex, or any LLM to optimize manually:
+Paste this into Claude Code, Cursor, Codex, or any coding AI:
 
 ```
-I want to reduce my AI token consumption by 60-90%. Help me do the following:
+Go to https://github.com/spacenerd420/tokendiet and follow the README to
+optimize my token usage. Set up ignore files, configure my Claude Code
+settings for cost reduction, install the recommended tools (RTK, Repomix,
+ccusage), check if my CLAUDE.md is too large, and show me how to monitor
+my savings going forward.
+```
+
+### Option C: Copy-paste manual setup
+
+<details>
+<summary>Full manual prompt (click to expand)</summary>
+
+```
+I want to reduce my AI token consumption by 60-90%. Do the following:
 
 1. CREATE IGNORE FILES
-   Create a .claudeignore (or .geminiignore / .codexignore) in my project root that excludes:
+   Create a .claudeignore (and/or .geminiignore, .codexignore) in my project root excluding:
    node_modules, .venv, vendor, lock files, dist, build, __pycache__, images, videos,
    archives, logs, tmp files, .vscode, .idea, .env, .git, .cache directories.
 
 2. OPTIMIZE CLAUDE CODE SETTINGS
-   Update ~/.claude/settings.json with these values (merge, don't overwrite):
+   Update ~/.claude/settings.json (merge with existing, don't overwrite):
    - "model": "sonnet" (60% cheaper than Opus, handles 80% of tasks)
-   - env.MAX_THINKING_TOKENS: "10000" (caps hidden reasoning, default is ~32K)
-   - env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: "50" (compact context at 50%, default is 95%)
-   - env.CLAUDE_CODE_SUBAGENT_MODEL: "haiku" (cheaper model for file search/grep tasks)
+   - env.MAX_THINKING_TOKENS: "10000" (caps hidden reasoning tokens, default ~32K)
+   - env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: "50" (compact at 50%, default 95%)
+   - env.CLAUDE_CODE_SUBAGENT_MODEL: "haiku" (cheaper model for file search/grep)
 
 3. INSTALL TOOLS
-   - npm install -g @rtk-ai/rtk && rtk init -g --claude-code
-   - npm install -g repomix
-   - npm install -g tokscale
-   - npm install -g ccusage
+   npm install -g @rtk-ai/rtk && rtk init -g --claude-code
+   npm install -g repomix
+   npm install -g ccusage
 
 4. CHECK MY CLAUDE.md
-   If my CLAUDE.md is over 60 lines, suggest splitting it into:
+   If over 60 lines, split into:
    - CLAUDE.md (critical rules only, always loaded)
-   - ARCHITECTURE.md, PATTERNS.md, STYLE.md (loaded on-demand with @filename)
+   - ARCHITECTURE.md, PATTERNS.md, STYLE.md (on-demand via @filename)
 
-5. SHOW ME HOW TO MONITOR
-   After setup, I should run: rtk gain, rtk discover, tokscale report, npx ccusage@latest
+5. MONITOR
+   Show me: rtk gain, rtk discover, npx ccusage@latest
 ```
 
-## Requirements
+</details>
 
-- Python 3.7+
-- npm, pip, or Homebrew (for tool installs)
+---
 
 ## Settings Reference
 
@@ -75,10 +97,58 @@ I want to reduce my AI token consumption by 60-90%. Help me do the following:
 |---------|------|-------------|-----|
 | `model` | Default Claude model | `sonnet` | 60% cheaper than Opus for most tasks |
 | `MAX_THINKING_TOKENS` | Hidden reasoning cap | `10000` | Default ~32K, billed at 5x input rate |
-| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | When to compress context | `50` | Default 95% means context rarely compacts |
+| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | When to compress context | `50` | Default 95% = context rarely compacts |
 | `CLAUDE_CODE_SUBAGENT_MODEL` | Model for background tasks | `haiku` | Search/grep don't need expensive models |
 
-## Monitoring
+---
+
+## Awesome Token Optimization Tools
+
+A curated list of tools for reducing AI token consumption, monitoring costs, and optimizing context.
+
+### Context Compression
+
+| Tool | Description |
+|------|-------------|
+| [RTK](https://github.com/rtk-ai/rtk) | CLI proxy that compresses shell output by 60-90%. Hooks into Claude Code, Cursor, Codex, Gemini. |
+| [Repomix](https://github.com/yamadashy/repomix) | Packs entire repos into one structured file via Tree-sitter AST. |
+| [files-to-prompt](https://github.com/simonw/files-to-prompt) | Cherry-picks specific files into prompt-friendly format. |
+| [Code2Prompt](https://github.com/mufeedvh/code2prompt) | Converts codebases into structured LLM prompts with token counting. |
+| [Headroom](https://github.com/chopratejas/headroom) | Context optimization layer with 70-90% token savings on tool outputs. |
+| [gptree](https://github.com/travisvn/gptree) | Combines project files into single text with directory tree structure. |
+| [llmd](https://github.com/akatz-ai/llmd) | Converts git repos into LLM-friendly context markdown. |
+| [ttok](https://github.com/simonw/ttok) | Count and truncate text based on tokens. |
+
+### Usage Monitoring
+
+| Tool | Description |
+|------|-------------|
+| [ccusage](https://github.com/ryoppippi/ccusage) | Analyzes Claude Code usage from local JSONL log files. |
+| [Tokscale](https://github.com/junhoyeo/tokscale) | Tracks token usage across Claude Code, OpenCode, and other AI tools. |
+| [toktrack](https://github.com/mag123c/toktrack) | Ultra-fast Rust-based token and cost tracker for LLM usage. |
+| [Claude-Code-Usage-Monitor](https://github.com/Maciek-roboblog/Claude-Code-Usage-Monitor) | Real-time Claude Code usage monitor with predictions. |
+| [Helicone](https://github.com/Helicone/helicone) | Open-source LLM observability platform for costs, latency, and quality. |
+| [tokencost](https://github.com/AgentOps-AI/tokencost) | Token price estimates for 400+ LLMs. |
+
+### Prompt Caching & Optimization
+
+| Tool | Description |
+|------|-------------|
+| [GPTCache](https://github.com/zilliztech/GPTCache) | Semantic cache for LLM responses. Integrates with LangChain. |
+| [LiteLLM](https://github.com/BerriAI/litellm) | Unified LLM proxy with caching, spend tracking, and 100+ provider support. |
+| [Semantic Cache](https://github.com/upstash/semantic-cache) | Fuzzy key-value store based on semantic similarity for LLM caching. |
+
+### Context Window Management
+
+| Tool | Description |
+|------|-------------|
+| [Context Engine](https://github.com/Context-Engine-AI/Context-Engine) | MCP-based agentic context compression suite. |
+| [llm-context](https://github.com/cyberchitta/llm-context.py) | Share code with LLMs via MCP with rule-based task customization. |
+| [context-llemur](https://github.com/jerpint/context-llemur) | Persistent, version-controlled memory for LLM context via MCP. |
+
+---
+
+## Monitoring Cheat Sheet
 
 ```bash
 rtk gain              # Token savings analytics
@@ -86,6 +156,17 @@ rtk discover          # Find missed optimizations
 tokscale report       # Usage across tools
 npx ccusage@latest    # Claude Code usage from logs
 ```
+
+---
+
+## Requirements
+
+- Python 3.7+
+- npm, pip, or Homebrew (for tool installs)
+
+## Contributing
+
+Found a tool that should be on the list? [Open an issue](https://github.com/spacenerd420/tokendiet/issues) or submit a PR.
 
 ## License
 
