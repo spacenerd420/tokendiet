@@ -27,64 +27,69 @@ Interactive wizard + copy-paste prompt for reducing token consumption across **C
 ```bash
 git clone https://github.com/spacenerd420/tokendiet.git
 cd tokendiet
-python3 optimizer.py
+python3 wizard.py
 ```
 
-The wizard walks you through 6 phases with a clean, step-by-step UI:
+The wizard walks you through 6 phases with a clean, step-by-step UI. Already-installed tools are auto-detected and skipped.
 
 | Phase | What | Savings |
 |-------|------|---------|
 | 1. Ignore files | Create `.claudeignore` / `.geminiignore` / `.codexignore` | 40-70% |
 | 2. Settings | Tune `~/.claude/settings.json` per-setting | 60-80% |
-| 3. Tools | Install RTK, Repomix, ccusage, etc. (opt-in each) | 60-90% |
+| 3. Tools | Install RTK, Repomix, ccusage, etc. (auto-detects existing) | 60-90% |
 | 4. CLAUDE.md | Flag oversized instruction files | up to 90% |
 | 5. Best practices | Quick reference cheat sheet | -- |
 | 6. Monitoring | Commands to track savings | -- |
 
 ### Option B: Just tell your AI
 
-Paste this into Claude Code, Cursor, Codex, or any coding AI:
+Paste this into any AI coding assistant (Claude Code, Cursor, Codex, Gemini, Copilot, Windsurf, etc.):
 
 ```
-Go to https://github.com/spacenerd420/tokendiet and follow the README to
-optimize my token usage. Set up ignore files, configure my Claude Code
-settings for cost reduction, install the recommended tools (RTK, Repomix,
-ccusage), check if my CLAUDE.md is too large, and show me how to monitor
-my savings going forward.
+Read https://github.com/spacenerd420/tokendiet/blob/main/README.md and follow it to
+optimize my token usage and reduce costs. Set up ignore files for whichever AI tool
+I'm using, configure my settings for cost reduction, install the recommended CLI tools
+(RTK, Repomix, ccusage), check if my project instruction files are too large, and show
+me how to monitor my savings going forward.
 ```
 
-### Option C: Copy-paste manual setup
+### Option C: Full manual prompt
 
 <details>
-<summary>Full manual prompt (click to expand)</summary>
+<summary>Click to expand -- paste into any LLM</summary>
 
 ```
-I want to reduce my AI token consumption by 60-90%. Do the following:
+I want to reduce my AI coding assistant's token consumption by 60-90%. Do the following:
 
 1. CREATE IGNORE FILES
-   Create a .claudeignore (and/or .geminiignore, .codexignore) in my project root excluding:
-   node_modules, .venv, vendor, lock files, dist, build, __pycache__, images, videos,
-   archives, logs, tmp files, .vscode, .idea, .env, .git, .cache directories.
+   Create ignore files in my project root (use whichever applies to my tools):
+   - .claudeignore (for Claude Code)
+   - .geminiignore (for Gemini CLI)
+   - .codexignore (for Codex CLI)
+   - .cursorignore (for Cursor)
+   Exclude: node_modules, .venv, vendor, lock files, dist, build, __pycache__,
+   images, videos, archives, logs, tmp files, .vscode, .idea, .env, .git, .cache dirs.
 
-2. OPTIMIZE CLAUDE CODE SETTINGS
+2. OPTIMIZE SETTINGS (Claude Code users)
    Update ~/.claude/settings.json (merge with existing, don't overwrite):
    - "model": "sonnet" (60% cheaper than Opus, handles 80% of tasks)
    - env.MAX_THINKING_TOKENS: "10000" (caps hidden reasoning tokens, default ~32K)
    - env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: "50" (compact at 50%, default 95%)
    - env.CLAUDE_CODE_SUBAGENT_MODEL: "haiku" (cheaper model for file search/grep)
 
-3. INSTALL TOOLS
-   npm install -g @rtk-ai/rtk && rtk init -g --claude-code
-   npm install -g repomix
-   npm install -g ccusage
+3. INSTALL TOOLS (check if already installed first)
+   npm install -g @rtk-ai/rtk   # CLI output compression
+   rtk init -g --claude-code     # (or --cursor, --codex, --gemini)
+   npm install -g repomix        # repo compression
+   npm install -g ccusage        # usage monitoring
 
-4. CHECK MY CLAUDE.md
-   If over 60 lines, split into:
-   - CLAUDE.md (critical rules only, always loaded)
-   - ARCHITECTURE.md, PATTERNS.md, STYLE.md (on-demand via @filename)
+4. CHECK MY INSTRUCTION FILES
+   If my CLAUDE.md / .cursorrules / codex instructions are over 60 lines, suggest
+   splitting into a main file (critical rules only, always loaded) plus separate
+   on-demand files (architecture, patterns, style) loaded via @filename references.
 
 5. MONITOR
-   Show me: rtk gain, rtk discover, npx ccusage@latest
+   Show me how to run: rtk gain, rtk discover, npx ccusage@latest
 ```
 
 </details>
@@ -125,7 +130,7 @@ A curated list of tools for reducing AI token consumption, monitoring costs, and
 |------|-------------|
 | [ccusage](https://github.com/ryoppippi/ccusage) | Analyzes Claude Code usage from local JSONL log files. |
 | [Tokscale](https://github.com/junhoyeo/tokscale) | Tracks token usage across Claude Code, OpenCode, and other AI tools. |
-| [toktrack](https://github.com/mag123c/toktrack) | Ultra-fast Rust-based token and cost tracker for LLM usage. |
+| [toktrack](https://github.com/mag123c/toktrack) | Ultra-fast Rust-based token and cost tracker. |
 | [Claude-Code-Usage-Monitor](https://github.com/Maciek-roboblog/Claude-Code-Usage-Monitor) | Real-time Claude Code usage monitor with predictions. |
 | [Helicone](https://github.com/Helicone/helicone) | Open-source LLM observability platform for costs, latency, and quality. |
 | [tokencost](https://github.com/AgentOps-AI/tokencost) | Token price estimates for 400+ LLMs. |

@@ -445,6 +445,7 @@ def phase_settings():
 TOOLS = [
     {
         "name": "RTK",
+        "cmd": "rtk",
         "savings": "60-90%",
         "oneliner": "Compresses CLI output (git, npm, ls, grep...) before AI sees it.",
         "how": "Installs as a hook -- your commands run normally, output gets auto-compressed.",
@@ -453,6 +454,7 @@ TOOLS = [
     },
     {
         "name": "Repomix",
+        "cmd": "repomix",
         "savings": "~70%",
         "oneliner": "Packs your entire codebase into one AI-friendly file.",
         "how": "Uses Tree-sitter to extract function signatures, skip bodies.",
@@ -461,6 +463,7 @@ TOOLS = [
     },
     {
         "name": "Tokscale",
+        "cmd": "tokscale",
         "savings": "monitor",
         "oneliner": "Tracks token usage across Claude, Gemini, Cursor, Codex.",
         "how": "Aggregates usage data and shows trends so you know what to optimize.",
@@ -469,6 +472,7 @@ TOOLS = [
     },
     {
         "name": "ccusage",
+        "cmd": "ccusage",
         "savings": "monitor",
         "oneliner": "Shows token usage from Claude Code's local log files.",
         "how": "Reads ~/.claude/logs and breaks down input/output/thinking per session.",
@@ -477,6 +481,7 @@ TOOLS = [
     },
     {
         "name": "files-to-prompt",
+        "cmd": "files-to-prompt",
         "savings": "50-70%",
         "oneliner": "Cherry-picks specific files into a prompt-friendly format.",
         "how": "Unlike Repomix (whole repo), this targets individual files you choose.",
@@ -487,6 +492,18 @@ TOOLS = [
 
 # Map string names to actual functions (defined below)
 TOOL_INSTALLERS = {}
+
+
+def is_installed(cmd):
+    """Check if a CLI tool is already on PATH."""
+    try:
+        subprocess.run(
+            [cmd, "--version"], capture_output=True, check=True
+        )
+        return True
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        # Some tools exit non-zero for --version but still exist
+        return shutil.which(cmd) is not None
 
 
 def phase_install_tools():
@@ -505,9 +522,18 @@ def phase_install_tools():
     info(f"Package managers: {mgrs}\n")
 
     installed = []
+    already = []
     for t in TOOLS:
         sav = t["savings"]
         tag = C.green(f"[{sav}]") if sav != "monitor" else C.blue("[monitor]")
+
+        # Check if already installed
+        if is_installed(t["cmd"]):
+            print(f"  {C.bold(t['name'])} {tag}  {C.green('already installed')}")
+            already.append(t["name"])
+            print()
+            continue
+
         print(f"  {C.bold(t['name'])} {tag}  {t['oneliner']}")
         print(f"  {C.dim(t['how'])}")
         print(f"  {C.dim('e.g. ' + t['example'])}")
@@ -517,6 +543,9 @@ def phase_install_tools():
             if fn():
                 installed.append(t["name"])
         print()
+
+    if already:
+        info(f"Already installed: {', '.join(already)}")
 
     finish_phase(3)
     return installed
